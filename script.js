@@ -3,6 +3,12 @@ let currentPage = 1;
 let tasksPerPage = 10;
 let editingIndex = -1; // Menyimpan index task yang sedang di-edit
 
+// Fungsi utama untuk load data dari localStorage saat halaman dibuka
+window.onload = function() {
+    loadFromLocalStorage();
+    renderTasks();
+};
+
 document.getElementById("add-task-btn").addEventListener("click", addTask);
 document.getElementById("prev-btn").addEventListener("click", function() {
     if (currentPage > 1) {
@@ -37,6 +43,7 @@ function addTask() {
             editingIndex = -1; // Reset edit index setelah selesai mengedit
         }
         taskInput.value = "";
+        saveToLocalStorage(); // Simpan ke localStorage setelah task ditambahkan
         renderTasks();
     }
 }
@@ -67,8 +74,17 @@ function renderTasks() {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = task.completed;
+
+        // Event ketika checkbox diubah
         checkbox.addEventListener("change", function() {
-            task.completed = checkbox.checked;
+            if (checkbox.checked) {
+                tasks.splice(start + index, 1); // Menghapus task saat di ceklis
+                saveToLocalStorage(); // Simpan perubahan ke localStorage
+                renderTasks(); // Render ulang task list
+            } else {
+                task.completed = checkbox.checked;
+                saveToLocalStorage(); // Simpan perubahan ke localStorage
+            }
         });
         tdStatus.appendChild(checkbox);
         tr.appendChild(tdStatus);
@@ -92,6 +108,7 @@ function renderTasks() {
         deleteBtn.className = "delete-btn";
         deleteBtn.addEventListener("click", function() {
             tasks.splice(start + index, 1);
+            saveToLocalStorage(); // Simpan perubahan ke localStorage
             renderTasks();
         });
         tdAction.appendChild(deleteBtn);
@@ -113,6 +130,19 @@ function searchTasks() {
     const searchInput = document.getElementById("search-task").value.toLowerCase();
     tasks = tasks.filter(task => task.name.toLowerCase().includes(searchInput));
     renderTasks();
+}
+
+// Simpan ke localStorage
+function saveToLocalStorage() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// Load dari localStorage
+function loadFromLocalStorage() {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+        tasks = JSON.parse(storedTasks);
+    }
 }
 
 // Simpan ke file JSON
@@ -139,6 +169,7 @@ function handleFileSelect(event) {
         const reader = new FileReader();
         reader.onload = function(e) {
             tasks = JSON.parse(e.target.result);
+            saveToLocalStorage(); // Simpan ke localStorage setelah load dari file
             renderTasks();
         };
         reader.readAsText(file);
