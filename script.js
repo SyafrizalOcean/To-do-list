@@ -1,39 +1,43 @@
+let tasks = [];
 let currentPage = 1;
 let tasksPerPage = 10;
-let tasks = loadTasksFromLocalStorage(); // Load tasks from localStorage
+let editingIndex = -1; // Menyimpan index task yang sedang di-edit
 
-document.getElementById("add-task-btn").addEventListener("click", function() {
-    addTask();
-    renderTasks();
-});
-
-document.getElementById("search-task").addEventListener("input", function() {
-    renderTasks();
-});
-
+document.getElementById("add-task-btn").addEventListener("click", addTask);
 document.getElementById("prev-btn").addEventListener("click", function() {
     if (currentPage > 1) {
         currentPage--;
         renderTasks();
     }
 });
-
 document.getElementById("next-btn").addEventListener("click", function() {
     if (currentPage * tasksPerPage < tasks.length) {
         currentPage++;
         renderTasks();
     }
 });
+document.getElementById("save-btn").addEventListener("click", saveToFile);
+document.getElementById("load-btn").addEventListener("click", loadFromFile);
+document.getElementById("file-input").addEventListener("change", handleFileSelect);
+document.getElementById("search-task").addEventListener("input", searchTasks);
 
 function addTask() {
     const taskInput = document.getElementById("new-task");
-    if (taskInput.value.trim() !== "") {
-        tasks.push({
-            name: taskInput.value,
-            completed: false
-        });
+    const taskValue = taskInput.value.trim();
+
+    if (taskValue !== "") {
+        if (editingIndex === -1) {
+            const newTask = {
+                name: taskValue,
+                completed: false
+            };
+            tasks.push(newTask);
+        } else {
+            tasks[editingIndex].name = taskValue;
+            editingIndex = -1; // Reset edit index setelah selesai mengedit
+        }
         taskInput.value = "";
-        saveTasksToLocalStorage(); // Save tasks to localStorage after adding
+        renderTasks();
     }
 }
 
@@ -41,103 +45,102 @@ function renderTasks() {
     const taskList = document.getElementById("task-list");
     taskList.innerHTML = "";
 
-    const searchValue = document.getElementById("search-task").value.toLowerCase();
-    const filteredTasks = tasks.filter(task => task.name.toLowerCase().includes(searchValue));
-
     const start = (currentPage - 1) * tasksPerPage;
     const end = start + tasksPerPage;
-    const paginatedTasks = filteredTasks.slice(start, end);
+    const paginatedTasks = tasks.slice(start, end);
 
     paginatedTasks.forEach((task, index) => {
         const tr = document.createElement("tr");
 
-        // Number column (auto increment)
+        // Nomor otomatis
         const tdNo = document.createElement("td");
         tdNo.textContent = start + index + 1;
         tr.appendChild(tdNo);
 
-        // Task name column
+        // Nama task
         const tdTask = document.createElement("td");
         tdTask.textContent = task.name;
         tr.appendChild(tdTask);
 
-        // Status column (checkbox)
+        // Status task (checkbox)
         const tdStatus = document.createElement("td");
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = task.completed;
         checkbox.addEventListener("change", function() {
             task.completed = checkbox.checked;
-            saveTasksToLocalStorage(); // Save tasks when status changes
         });
         tdStatus.appendChild(checkbox);
         tr.appendChild(tdStatus);
 
-        // Action column (Edit & Delete)
+        // Tombol aksi (edit dan hapus)
         const tdAction = document.createElement("td");
+
+        // Tombol Edit
         const editBtn = document.createElement("button");
         editBtn.textContent = "Edit";
-        editBtn.classList.add("edit-btn");
-        editBtn.onclick = function() {
-            editTask(tdTask, editBtn, task);
-        };
+        editBtn.className = "edit-btn";
+        editBtn.addEventListener("click", function() {
+            document.getElementById("new-task").value = task.name;
+            editingIndex = start + index; // Simpan index untuk diedit
+        });
+        tdAction.appendChild(editBtn);
+
+        // Tombol Delete
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
-        deleteBtn.classList.add("delete-btn");
-        deleteBtn.onclick = function() {
-            tasks.splice(tasks.indexOf(task), 1);
-            saveTasksToLocalStorage(); // Save tasks after deleting
+        deleteBtn.className = "delete-btn";
+        deleteBtn.addEventListener("click", function() {
+            tasks.splice(start + index, 1);
             renderTasks();
-        };
-        tdAction.appendChild(editBtn);
+        });
         tdAction.appendChild(deleteBtn);
-        tr.appendChild(tdAction);
 
+        tr.appendChild(tdAction);
         taskList.appendChild(tr);
     });
 
-    // Update task count
-    document.getElementById("task-count").textContent = `Total items: ${filteredTasks.length}`;
+    // Update jumlah item
+    document.getElementById("task-count").textContent = `Total items: ${tasks.length}`;
 
-    // Update pagination controls
+    // Update pagination
     document.getElementById("page-number").textContent = currentPage;
     document.getElementById("prev-btn").disabled = currentPage === 1;
-    document.getElementById("next-btn").disabled = currentPage * tasksPerPage >= filteredTasks.length;
+    document.getElementById("next-btn").disabled = currentPage * tasksPerPage >= tasks.length;
 }
 
-function editTask(tdTask, editBtn, task) {
-    const originalTask = tdTask.textContent;
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = originalTask;
-
-    tdTask.textContent = "";
-    tdTask.appendChild(input);
-
-    editBtn.textContent = "Save";
-    editBtn.onclick = function() {
-        if (input.value.trim() !== "") {
-            task.name = input.value;
-            tdTask.textContent = task.name;
-            saveTasksToLocalStorage(); // Save tasks after editing
-            editBtn.textContent = "Edit";
-            editBtn.onclick = function() {
-                editTask(tdTask, editBtn, task);
-            };
-        }
-    };
+function searchTasks() {
+    const searchInput = document.getElementById("search-task").value.toLowerCase();
+    tasks = tasks.filter(task => task.name.toLowerCase().includes(searchInput));
+    renderTasks();
 }
 
-// Save tasks to localStorage
-function saveTasksToLocalStorage() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+// Simpan ke file JSON
+function saveToFile() {
+    const data = JSON.stringify(tasks, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tasks.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
-// Load tasks from localStorage
-function loadTasksFromLocalStorage() {
-    const storedTasks = localStorage.getItem("tasks");
-    return storedTasks ? JSON.parse(storedTasks) : [];
+// Muat dari file JSON
+function loadFromFile() {
+    document.getElementById('file-input').click();
 }
 
-// Initial render
-renderTasks();
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            tasks = JSON.parse(e.target.result);
+            renderTasks();
+        };
+        reader.readAsText(file);
+    }
+}

@@ -3,44 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List with Pagination</title>
+    <title>To-Do List</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>To-Do List</h1>
-        
-        <div class="input-container">
-            <input type="text" id="new-task" placeholder="Add a new task...">
-            <button id="add-task-btn">Add</button>
-        </div>
+    <h1>To-Do List</h1>
 
-        <div class="search-container">
-            <input type="text" id="search-task" placeholder="Search tasks...">
-        </div>
+    <input type="text" id="search-task" placeholder="Search task...">
+    <input type="text" id="new-task" placeholder="Add a new task">
+    <button id="add-task-btn">Add Task</button>
 
-        <table id="task-table">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Task</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="task-list">
-                <!-- Tasks will be dynamically added here -->
-            </tbody>
-        </table>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Task</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="task-list"></tbody>
+    </table>
 
-        <div id="task-count">Total items: 0</div>
+    <p id="task-count"></p>
 
-        <div class="pagination">
-            <button id="prev-btn" disabled>Prev</button>
-            <span id="page-number">1</span>
-            <button id="next-btn" disabled>Next</button>
-        </div>
-    </div>
+    <button id="prev-btn">Prev</button>
+    <span id="page-number">1</span>
+    <button id="next-btn">Next</button>
+
+    <br><br>
+    <button id="save-btn">Save to JSON</button>
+    <input type="file" id="file-input" accept=".json">
+    <button id="load-btn">Load from JSON</button>
 
     <script src="script.js"></script>
 </body>
