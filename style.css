@@ -1,8 +1,67 @@
+/* Styling untuk body dan container utama */
 body {
     font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
     margin: 20px;
 }
 
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Input section untuk task */
+.input-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#new-task {
+    width: 75%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+#add-task-btn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#add-task-btn:hover {
+    background-color: darkgreen;
+}
+
+/* Search section */
+.search-section {
+    margin-bottom: 20px;
+}
+
+#search-task {
+    width: 50%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+/* Styling tabel to-do */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -11,46 +70,92 @@ table {
 
 table, th, td {
     border: 1px solid black;
+    text-align: center;
 }
 
 th, td {
-    padding: 8px;
-    text-align: left;
+    padding: 10px;
 }
 
+th {
+    background-color: #f0f0f0;
+}
+
+/* Kolom Nomor yang lebih kecil */
+td:first-child {
+    width: 50px;
+}
+
+/* Tombol edit dan delete */
 button {
     padding: 5px 10px;
     margin-top: 10px;
 }
 
-#add-task-btn {
-    background-color: green;
-    color: white;
-}
-
 .edit-btn {
     background-color: yellow;
     color: black;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background-color: gold;
 }
 
 .delete-btn {
     background-color: red;
     color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-#task-count {
-    margin-top: 10px;
+.delete-btn:hover {
+    background-color: darkred;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 
 #prev-btn, #next-btn {
     margin: 5px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
+#prev-btn:hover, #next-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Jumlah task */
+#task-count {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* File input hidden */
 input[type="file"] {
     display: none;
 }
 
-#search-task {
-    margin-bottom: 10px;
-    padding: 5px;
+/* Add custom focus styles */
+input:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 1px solid rgba(81, 203, 238, 1);
 }
