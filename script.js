@@ -50,6 +50,11 @@ function renderTasks() {
     paginatedTasks.forEach((task, index) => {
         const tr = document.createElement("tr");
 
+        // Number column (auto increment)
+        const tdNo = document.createElement("td");
+        tdNo.textContent = start + index + 1;
+        tr.appendChild(tdNo);
+
         // Task name column
         const tdTask = document.createElement("td");
         tdTask.textContent = task.name;
@@ -76,6 +81,7 @@ function renderTasks() {
         };
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
+        deleteBtn.classList.add("delete-btn");
         deleteBtn.onclick = function() {
             tasks.splice(tasks.indexOf(task), 1);
             renderTasks();
@@ -86,6 +92,9 @@ function renderTasks() {
 
         taskList.appendChild(tr);
     });
+
+    // Update task count
+    document.getElementById("task-count").textContent = `Total items: ${filteredTasks.length}`;
 
     // Update pagination controls
     document.getElementById("page-number").textContent = currentPage;

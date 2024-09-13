@@ -19,6 +19,7 @@ body {
 h1 {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 24px; /* Memperkecil ukuran font */
 }
 
 .input-container, .search-container {
@@ -27,9 +28,10 @@ h1 {
 }
 
 input, button {
-    padding: 10px;
+    padding: 8px; /* Memperkecil padding untuk menghemat ruang */
     margin-right: 5px;
     flex: 1;
+    font-size: 14px; /* Memperkecil ukuran font */
 }
 
 input[type="text"] {
@@ -41,7 +43,7 @@ button {
     color: white;
     border: none;
     cursor: pointer;
-    padding: 10px;
+    padding: 8px; /* Memperkecil padding */
 }
 
 button:hover {
@@ -54,13 +56,20 @@ table {
 }
 
 table th, table td {
-    padding: 10px;
+    padding: 8px; /* Memperkecil padding */
     border: 1px solid #ddd;
     text-align: left;
+    font-size: 14px; /* Memperkecil ukuran font */
 }
 
 table th {
     background-color: #f2f2f2;
+}
+
+#task-count {
+    margin-top: 10px;
+    text-align: right;
+    font-size: 14px; /* Memperkecil ukuran font */
 }
 
 .pagination {
@@ -70,12 +79,13 @@ table th {
 }
 
 .pagination button {
-    padding: 10px;
+    padding: 8px;
     background-color: #007bff;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    font-size: 14px; /* Memperkecil ukuran font */
 }
 
 .pagination button:disabled {
@@ -85,4 +95,24 @@ table th {
 
 .pagination span {
     padding: 10px;
+    font-size: 14px; /* Memperkecil ukuran font */
+}
+
+/* Tombol edit dan delete */
+.edit-btn {
+    background-color: yellow;
+    color: black;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.delete-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 5px;
 }
