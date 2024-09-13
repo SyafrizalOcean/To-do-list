@@ -1,6 +1,6 @@
 let currentPage = 1;
-let tasksPerPage = 10; // 10 tugas per halaman
-let tasks = [];
+let tasksPerPage = 10;
+let tasks = loadTasksFromLocalStorage(); // Load tasks from localStorage
 
 document.getElementById("add-task-btn").addEventListener("click", function() {
     addTask();
@@ -33,6 +33,7 @@ function addTask() {
             completed: false
         });
         taskInput.value = "";
+        saveTasksToLocalStorage(); // Save tasks to localStorage after adding
     }
 }
 
@@ -67,6 +68,7 @@ function renderTasks() {
         checkbox.checked = task.completed;
         checkbox.addEventListener("change", function() {
             task.completed = checkbox.checked;
+            saveTasksToLocalStorage(); // Save tasks when status changes
         });
         tdStatus.appendChild(checkbox);
         tr.appendChild(tdStatus);
@@ -84,6 +86,7 @@ function renderTasks() {
         deleteBtn.classList.add("delete-btn");
         deleteBtn.onclick = function() {
             tasks.splice(tasks.indexOf(task), 1);
+            saveTasksToLocalStorage(); // Save tasks after deleting
             renderTasks();
         };
         tdAction.appendChild(editBtn);
@@ -116,6 +119,7 @@ function editTask(tdTask, editBtn, task) {
         if (input.value.trim() !== "") {
             task.name = input.value;
             tdTask.textContent = task.name;
+            saveTasksToLocalStorage(); // Save tasks after editing
             editBtn.textContent = "Edit";
             editBtn.onclick = function() {
                 editTask(tdTask, editBtn, task);
@@ -123,3 +127,17 @@ function editTask(tdTask, editBtn, task) {
         }
     };
 }
+
+// Save tasks to localStorage
+function saveTasksToLocalStorage() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// Load tasks from localStorage
+function loadTasksFromLocalStorage() {
+    const storedTasks = localStorage.getItem("tasks");
+    return storedTasks ? JSON.parse(storedTasks) : [];
+}
+
+// Initial render
+renderTasks();
